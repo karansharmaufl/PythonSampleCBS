@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling the Python code...
+      - echo new code by karan
+      - mkdir -p dependencies
+      - echo ls
+      - cp -r dependencies/* src/main
+      - echo created dependencies building deployment package
+      - cd src/main;
+      - python HelloWorld_tst.py
+      - zip -r deployment_package.zip
+      - echo copying artifacts to s3 bucket
+      - aws s3 cp src/main/deployment_package.zip s3://codebuildsvc-output-dev/PythonSampleBuild/deployment_package_python.zip
+      - echo Copying CFT and config to s3
+      - aws s3 cp PythonSampleCFT.template s3://codebuildsvc-output-dev/PythonSampleBuild/PythonSampleCFT.template
+      - echo Maybe you were successfull
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - '**/*'
